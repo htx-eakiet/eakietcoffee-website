@@ -1,12 +1,12 @@
 # Sau khi biết tên tài khoản GitHub và repository, thay YOUR_GITHUB_USERNAME/YOUR_REPOSITORY.
 backend:
   name: github
-  repo: YOUR_GITHUB_USERNAME/YOUR_REPOSITORY
+  repo: htx-eakiet/eakietcoffee-website
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
 
-site_url: https://eakietcoffee.com.vn
+site_url: https://htx-eakiet.netlify.app
 locale: 'vi'
 media_folder: 'images/uploads'
 public_folder: '/images/uploads'
