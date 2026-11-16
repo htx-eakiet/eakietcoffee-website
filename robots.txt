@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eakietcoffee.com.vn/sitemap.xml

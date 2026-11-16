@@ -1,0 +1,37 @@
+{
+  "posts": [
+    {
+      "title": "Vùng cà phê Ea Kiết – nền tảng cho hành trình phát triển bền vững",
+      "slug": "vung-ca-phe-ea-kiet",
+      "date": "",
+      "category": "Vùng nguyên liệu",
+      "excerpt": "Tìm hiểu vùng nguyên liệu cà phê của HTX, được hình thành từ diện tích sản xuất của thành viên và các hộ liên kết.",
+      "image": "/images/vuon-ca-phe-eakiet.jpg",
+      "image_alt": "Vườn cà phê tại vùng nguyên liệu Ea Kiết",
+      "body": "Vùng nguyên liệu cà phê của HTX Ea Kiết được hình thành từ diện tích sản xuất của thành viên và các hộ liên kết. Đây là nền tảng cho hoạt động tổ chức sản xuất, kết nối người trồng cà phê và phát triển sản phẩm của HTX.",
+      "published": true
+    },
+    {
+      "title": "Khám phá các dòng cà phê EA KIET Coffee",
+      "slug": "cac-dong-san-pham-ea-kiet-coffee",
+      "date": "",
+      "category": "Sản phẩm & chế biến",
+      "excerpt": "Danh mục sản phẩm của HTX được tổ chức thành ba nhóm chính, từ cà phê nhân xanh đến cà phê rang xay và rang hạt.",
+      "image": "/images/san-phoi-eakiet.jpg",
+      "image_alt": "Sân phơi cà phê tại HTX Ea Kiết",
+      "body": "Danh mục sản phẩm EA KIET Coffee được tổ chức thành ba nhóm chính: cà phê nhân xanh, cà phê rang xay và cà phê rang hạt. Thông tin chi tiết về từng sản phẩm được giới thiệu tại trang Sản phẩm của website.",
+      "published": true
+    },
+    {
+      "title": "Thương mại Công bằng và giá trị dành cho cộng đồng",
+      "slug": "thuong-mai-cong-bang-va-cong-dong",
+      "date": "",
+      "category": "Phát triển bền vững",
+      "excerpt": "Định hướng phát triển của HTX gắn với người nông dân, trách nhiệm sản xuất và sự đóng góp cho cộng đồng địa phương.",
+      "image": "/images/green-honey-s18.jpg",
+      "image_alt": "Cà phê nhân xanh Robusta Honey",
+      "body": "Định hướng phát triển của HTX gắn với người nông dân, thương mại công bằng, trách nhiệm trong sản xuất và sự đóng góp cho cộng đồng địa phương. Các hoạt động cụ thể sẽ được cập nhật trên website khi HTX cung cấp thông tin và hình ảnh thực tế.",
+      "published": true
+    }
+  ]
+}
