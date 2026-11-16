@@ -1735,3 +1735,23 @@ p, a, span, button, label, li {
 .article-related{margin-top:40px}
 .article-related .news-preview-grid{grid-template-columns:1fr;gap:14px}
 }
+
+
+/* ===== NEWS CARD REFINEMENT - DATE, EXCERPT & ALIGNMENT ===== */
+.news-preview-card,
+.news-list-card { display:flex; flex-direction:column; height:100%; }
+.news-preview-copy,
+.news-list-copy { display:flex; flex:1; flex-direction:column; align-items:flex-start; }
+.news-card-date { display:block; margin:-3px 0 10px; color:#929184; font-size:10px; line-height:1.5; }
+.news-preview-copy h3,
+.news-list-copy h3 { width:100%; margin-bottom:9px; }
+.news-preview-copy p,
+.news-list-copy p {
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4;
+  overflow:hidden; min-height:calc(1.8em * 4); margin-bottom:16px;
+}
+.news-preview-copy .news-read-more,
+.news-list-copy .news-read-more { margin-top:auto; padding-top:2px; }
+@media(max-width:600px) {
+  .news-preview-copy p,.news-list-copy p { -webkit-line-clamp:3; min-height:0; }
+}

@@ -70,7 +70,17 @@
     const href = `article.html?slug=${encodeURIComponent(post.slug || '')}`;
     const image = post.image || 'images/vuon-ca-phe-eakiet.jpg';
     const cls = preview ? 'news-preview' : 'news-list';
-    return `<article class="${cls}-card"><a class="${cls}-image" href="${href}"><img src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}" loading="lazy"></a><div class="${cls}-copy"><span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span><h3><a href="${href}">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.excerpt || '')}</p><a class="news-read-more" href="${href}">Đọc bài viết →</a></div></article>`;
+    const publishedDate = dateText(post.date);
+    return `<article class="${cls}-card">
+      <a class="${cls}-image" href="${href}"><img src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}" loading="lazy"></a>
+      <div class="${cls}-copy">
+        <span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span>
+        ${publishedDate ? `<time class="news-card-date" datetime="${escapeHtml(post.date)}">${escapeHtml(publishedDate)}</time>` : ''}
+        <h3><a href="${href}">${escapeHtml(post.title)}</a></h3>
+        <p>${escapeHtml(post.excerpt || '')}</p>
+        <a class="news-read-more" href="${href}">Đọc bài viết →</a>
+      </div>
+    </article>`;
   };
   fetch(DATA_URL).then(r => { if (!r.ok) throw new Error('Không tải được dữ liệu tin tức'); return r.json(); }).then(data => {
     const posts = (data.posts || []).filter(p => p.published !== false).sort((a,b) => (b.date || '').localeCompare(a.date || ''));
