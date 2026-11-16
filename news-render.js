@@ -6,7 +6,66 @@
     const date = new Date(value + (value.length === 10 ? 'T00:00:00' : ''));
     return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' }).format(date);
   };
-  const paragraphs = (text) => String(text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+  const safeUrl = (value) => {
+    const url = String(value || '').trim();
+    if (/^(https?:|mailto:|tel:|\/|\.\.?\/|#)/i.test(url) && !/^\/\//.test(url)) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    return '#';
+  };
+  const inlineMarkdown = (text) => {
+    let value = escapeHtml(text);
+    // Inline code first, protected from subsequent emphasis substitutions.
+    const code = [];
+    value = value.replace(/`([^`]+)`/g, (_, content) => { code.push(`<code>${content}</code>`); return `\u0000CODE${code.length-1}\u0000`; });
+    value = value.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g, (_, alt, url, title) => `<img src="${escapeHtml(safeUrl(url))}" alt="${alt}"${title ? ` title="${title}"` : ''} loading="lazy">`);
+    value = value.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g, (_, label, url, title) => `<a href="${escapeHtml(safeUrl(url))}"${/^https?:/i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : ''}${title ? ` title="${title}"` : ''}>${label}</a>`);
+    value = value.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/__(.+?)__/g, '<strong>$1</strong>');
+    value = value.replace(/~~(.+?)~~/g, '<del>$1</del>');
+    value = value.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>').replace(/(^|[^_])_([^_\n]+)_/g, '$1<em>$2</em>');
+    value = value.replace(/\u0000CODE(\d+)\u0000/g, (_, index) => code[Number(index)] || '');
+    return value;
+  };
+  const renderMarkdown = (source) => {
+    const lines = String(source || '').replace(/\r\n?/g, '\n').split('\n');
+    const out = [];
+    let paragraph = [], listType = null, quote = [], codeLines = [], inCode = false;
+    const flushParagraph = () => { if (paragraph.length) { out.push(`<p>${paragraph.map(inlineMarkdown).join('<br>')}</p>`); paragraph = []; } };
+    const closeList = () => { if (listType) { out.push(`</${listType}>`); listType = null; } };
+    const flushQuote = () => { if (quote.length) { out.push(`<blockquote>${renderMarkdown(quote.join('\n'))}</blockquote>`); quote = []; } };
+    const isSpecial = (line) => /^\s*(#{1,6}\s|>\s?|[-*+]\s+|\d+[.)]\s+|```|---+\s*$|___+\s*$|\*\*\*+\s*$|!\[|\|)/.test(line);
+    for (let i=0; i<lines.length; i++) {
+      const line = lines[i];
+      if (/^\s*```/.test(line)) {
+        flushParagraph(); closeList(); flushQuote();
+        if (inCode) { out.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`); codeLines=[]; inCode=false; }
+        else inCode=true;
+        continue;
+      }
+      if (inCode) { codeLines.push(line); continue; }
+      if (!line.trim()) { flushParagraph(); closeList(); flushQuote(); continue; }
+      const heading = line.match(/^\s*(#{1,6})\s+(.+)$/);
+      if (heading) { flushParagraph(); closeList(); flushQuote(); const level=Math.min(heading[1].length,4); out.push(`<h${level+1}>${inlineMarkdown(heading[2].replace(/\s+#+\s*$/, ''))}</h${level+1}>`); continue; }
+      if (/^\s*(---+|___+|\*\*\*+)\s*$/.test(line)) { flushParagraph(); closeList(); flushQuote(); out.push('<hr>'); continue; }
+      if (/^\s*>/.test(line)) { flushParagraph(); closeList(); quote.push(line.replace(/^\s*> ?/, '')); continue; }
+      if (quote.length) flushQuote();
+      const ul=line.match(/^\s*[-*+]\s+(.+)$/), ol=line.match(/^\s*\d+[.)]\s+(.+)$/);
+      if (ul || ol) { flushParagraph(); const type=ul?'ul':'ol'; if (listType!==type) { closeList(); out.push(`<${type}>`); listType=type; } out.push(`<li>${inlineMarkdown((ul||ol)[1])}</li>`); continue; }
+      // Simple Markdown table support.
+      if (/^\s*\|/.test(line) && i+1<lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i+1])) {
+        flushParagraph(); closeList(); flushQuote();
+        const cells = (v) => v.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim());
+        const heads=cells(line); i++;
+        const rows=[]; while(i+1<lines.length && /^\s*\|/.test(lines[i+1])) rows.push(cells(lines[++i]));
+        out.push(`<div class="article-table-wrap"><table><thead><tr>${heads.map(c=>`<th>${inlineMarkdown(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${heads.map((_,j)=>`<td>${inlineMarkdown(r[j]||'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`); continue;
+      }
+      if (isSpecial(line)) { flushParagraph(); closeList(); }
+      else if (listType) closeList();
+      paragraph.push(line);
+    }
+    if (inCode) out.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+    flushParagraph(); closeList(); flushQuote();
+    return out.join('\n');
+  };
   const card = (post, preview) => {
     const href = `article.html?slug=${encodeURIComponent(post.slug || '')}`;
     const image = post.image || 'images/vuon-ca-phe-eakiet.jpg';
@@ -40,7 +99,7 @@
         document.title = `${post.title} | EA KIET Coffee`;
         const meta = document.querySelector('meta[name="description"]'); if (meta) meta.content = post.excerpt || post.title;
         const image = post.image || 'images/vuon-ca-phe-eakiet.jpg';
-        detail.innerHTML = `<div class="container article-wrap"><div class="breadcrumb"><a href="index.html">Trang chủ</a> / <a href="news.html">Tin tức</a> / ${escapeHtml(post.category || '')}</div><article class="article-content"><span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span><h1>${escapeHtml(post.title)}</h1><div class="article-meta">${dateText(post.date)}</div><img class="article-cover" src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}"><div class="article-body">${paragraphs(post.body)}</div><a class="news-read-more" href="news.html">← Quay lại Tin tức</a></article></div>`;
+        detail.innerHTML = `<div class="container article-wrap"><div class="breadcrumb"><a href="index.html">Trang chủ</a> / <a href="news.html">Tin tức</a> / ${escapeHtml(post.category || '')}</div><article class="article-content"><span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span><h1>${escapeHtml(post.title)}</h1><div class="article-meta">${dateText(post.date)}</div><img class="article-cover" src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}"><div class="article-body">${renderMarkdown(post.body)}</div><a class="news-read-more" href="news.html">← Quay lại Tin tức</a></article></div>`;
       }
     }
   }).catch(() => {
