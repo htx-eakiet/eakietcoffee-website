@@ -99,7 +99,22 @@
         document.title = `${post.title} | EA KIET Coffee`;
         const meta = document.querySelector('meta[name="description"]'); if (meta) meta.content = post.excerpt || post.title;
         const image = post.image || 'images/vuon-ca-phe-eakiet.jpg';
-        detail.innerHTML = `<div class="container article-wrap"><div class="breadcrumb"><a href="index.html">Trang chủ</a> / <a href="news.html">Tin tức</a> / ${escapeHtml(post.category || '')}</div><article class="article-content"><span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span><h1>${escapeHtml(post.title)}</h1><div class="article-meta">${dateText(post.date)}</div><img class="article-cover" src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}"><div class="article-body">${renderMarkdown(post.body)}</div><a class="news-read-more" href="news.html">← Quay lại Tin tức</a></article></div>`;
+        const related = posts.filter(p => p.slug !== post.slug && p.category === post.category).slice(0, 3);
+        const relatedHtml = related.length ? `<section class="article-related" aria-labelledby="article-related-title"><div class="article-related-heading"><span class="article-related-kicker">KHÁM PHÁ THÊM</span><h2 id="article-related-title">Bài viết liên quan</h2></div><div class="news-preview-grid">${related.map(p => card(p, true)).join('')}</div></section>` : '';
+        detail.innerHTML = `<div class="container article-wrap">
+          <div class="breadcrumb"><a href="index.html">Trang chủ</a> / <a href="news.html">Tin tức</a> / ${escapeHtml(post.category || '')}</div>
+          <article class="article-content">
+            <span class="news-category">${escapeHtml(post.category || 'Tin tức')}</span>
+            <h1>${escapeHtml(post.title)}</h1>
+            <div class="article-meta">${dateText(post.date)}</div>
+            ${post.excerpt ? `<p class="article-excerpt">${escapeHtml(post.excerpt)}</p>` : ''}
+            <img class="article-cover" src="${escapeHtml(image)}" alt="${escapeHtml(post.image_alt || post.title)}">
+            <div class="article-body">${renderMarkdown(post.body)}</div>
+            <div class="article-endmark"><span class="article-endmark-line"></span><strong>EA KIET Coffee</strong><p>Kết nối người nông dân, phát triển vùng nguyên liệu và lan tỏa giá trị cà phê bền vững.</p></div>
+            <div class="article-actions"><a class="article-back-link" href="news.html">← Quay lại Tin tức</a></div>
+          </article>
+          ${relatedHtml}
+        </div>`;
       }
     }
   }).catch(() => {
