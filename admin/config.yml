@@ -41,5 +41,11 @@ collections:
               - { label: 'Mô tả ngắn', name: 'excerpt', widget: 'text' }
               - { label: 'Ảnh đại diện', name: 'image', widget: 'image', required: false }
               - { label: 'Mô tả ảnh', name: 'image_alt', widget: 'string', required: false }
-              - { label: 'Nội dung bài viết', name: 'body', widget: 'text', hint: 'Mỗi đoạn văn cách nhau một dòng trống.' }
+              - label: 'Nội dung bài viết'
+                name: 'body'
+                widget: 'richtext'
+                modes: ['rich_text', 'raw']
+                buttons: ['bold', 'italic', 'strikethrough', 'link', 'heading-two', 'heading-three', 'quote', 'bulleted-list', 'numbered-list']
+                editor_components: ['image', 'code-block']
+                hint: 'Có thể dùng thanh công cụ để tạo tiêu đề phụ, chữ đậm, danh sách, trích dẫn, liên kết và chèn ảnh. Chuyển sang chế độ Raw để chỉnh Markdown trực tiếp.'
               - { label: 'Xuất bản', name: 'published', widget: 'boolean', default: true }
