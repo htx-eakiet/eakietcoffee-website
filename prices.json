@@ -1,0 +1,41 @@
+{
+  "currency": "VND/kg",
+  "updatedAt": null,
+  "market": {
+    "sourceName": "Chưa cập nhật nguồn",
+    "sourceUrl": "",
+    "rows": [
+      {
+        "area": "Đắk Lắk",
+        "price": null,
+        "change": null
+      },
+      {
+        "area": "Cư M'gar",
+        "price": null,
+        "change": null
+      },
+      {
+        "area": "Tây Nguyên (tham khảo)",
+        "price": null,
+        "change": null
+      }
+    ]
+  },
+  "coop": {
+    "note": "Giá thu mua chính thức do HTX Ea Kiết công bố.",
+    "rows": [
+      {
+        "product": "Cà phê Robusta nhân xô",
+        "price": null,
+        "note": "Chưa công bố"
+      },
+      {
+        "product": "Cà phê Robusta nhân chất lượng cao",
+        "price": null,
+        "note": "Chưa công bố"
+      }
+    ]
+  },
+  "history": []
+}

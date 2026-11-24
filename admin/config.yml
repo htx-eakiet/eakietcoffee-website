@@ -1,0 +1,51 @@
+# Sau khi biết tên tài khoản GitHub và repository, thay YOUR_GITHUB_USERNAME/YOUR_REPOSITORY.
+backend:
+  name: github
+  repo: htx-eakiet/eakietcoffee-website
+  branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+
+site_url: https://htx-eakiet.netlify.app
+locale: 'vi'
+media_folder: 'images/uploads'
+public_folder: '/images/uploads'
+publish_mode: simple
+slug:
+  encoding: unicode
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  - name: 'news'
+    label: 'Tin tức & câu chuyện'
+    label_singular: 'Bài viết'
+    files:
+      - name: 'posts'
+        label: 'Danh sách bài viết'
+        file: 'data/news.json'
+        fields:
+          - label: 'Các bài viết'
+            name: 'posts'
+            widget: 'list'
+            label_singular: 'Bài viết'
+            summary: '{{fields.title}} · {{fields.category}}'
+            fields:
+              - { label: 'Tiêu đề', name: 'title', widget: 'string' }
+              - { label: 'Đường dẫn (slug)', name: 'slug', widget: 'string', hint: 'Viết không dấu, dùng dấu gạch ngang. Ví dụ: hoat-dong-htx-ea-kiet' }
+              - { label: 'Ngày đăng', name: 'date', widget: 'datetime', time_format: false, format: 'YYYY-MM-DD', date_format: 'DD/MM/YYYY', required: true }
+              - label: 'Chuyên mục'
+                name: 'category'
+                widget: 'select'
+                options: ['Hoạt động HTX', 'Vùng nguyên liệu', 'Sản phẩm & chế biến', 'Phát triển bền vững', 'Thị trường & kết nối']
+              - { label: 'Mô tả ngắn', name: 'excerpt', widget: 'text' }
+              - { label: 'Ảnh đại diện', name: 'image', widget: 'image', required: false }
+              - { label: 'Mô tả ảnh', name: 'image_alt', widget: 'string', required: false }
+              - label: 'Nội dung bài viết'
+                name: 'body'
+                widget: 'richtext'
+                modes: ['rich_text', 'raw']
+                buttons: ['bold', 'italic', 'strikethrough', 'link', 'heading-two', 'heading-three', 'quote', 'bulleted-list', 'numbered-list']
+                editor_components: ['image', 'code-block']
+                hint: 'Có thể dùng thanh công cụ để tạo tiêu đề phụ, chữ đậm, danh sách, trích dẫn, liên kết và chèn ảnh. Chuyển sang chế độ Raw để chỉnh Markdown trực tiếp.'
+              - { label: 'Xuất bản', name: 'published', widget: 'boolean', default: true }
